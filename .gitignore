@@ -1,0 +1,50 @@
+# ========================
+# Frontend - Next.js
+# ========================
+
+frontend/node_modules/
+frontend/.next/
+frontend/out/
+
+frontend/.env
+frontend/.env.local
+frontend/.env.development.local
+frontend/.env.test.local
+frontend/.env.production.local
+
+frontend/npm-debug.log*
+frontend/yarn-debug.log*
+frontend/yarn-error.log*
+
+# ========================
+# Backend - Spring Boot
+# ========================
+
+backend/target/
+
+# Uploaded / processed videos
+backend/storage/
+
+# Environment files
+backend/.env
+
+# Logs
+*.log
+
+# ========================
+# IDE
+# ========================
+
+.vscode/
+.idea/
+*.iml
+
+# ========================
+# OS
+# ========================
+
+.DS_Store
+Thumbs.db
+
+# Local test videos
+*.mp4

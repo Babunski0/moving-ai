@@ -1,0 +1,22 @@
+spring:
+  application:
+    name: moving-ai-backend
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/moving_ai
+    username: postgres
+    password: ${DB_PASSWORD}
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+
+  servlet:
+    multipart:
+      max-file-size: 500MB
+      max-request-size: 500MB
+
+server:
+  port: 8080
