@@ -10,6 +10,7 @@ public class FurnitureItem {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false)
     private String name;
 
     private Integer quantity;
@@ -18,15 +19,15 @@ public class FurnitureItem {
 
     private Boolean excluded;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "video_analysis_id", nullable = false)
+    private VideoAnalysis videoAnalysis;
+
     public FurnitureItem() {
     }
 
     public Long getId() {
         return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public String getName() {
@@ -59,5 +60,13 @@ public class FurnitureItem {
 
     public void setExcluded(Boolean excluded) {
         this.excluded = excluded;
+    }
+
+    public VideoAnalysis getVideoAnalysis() {
+        return videoAnalysis;
+    }
+
+    public void setVideoAnalysis(VideoAnalysis videoAnalysis) {
+        this.videoAnalysis = videoAnalysis;
     }
 }
