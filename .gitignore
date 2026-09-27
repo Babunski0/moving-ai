@@ -48,3 +48,8 @@ Thumbs.db
 
 # Local test videos
 *.mp4
+
+# Python Vision
+vision/.venv/
+vision/__pycache__/
+vision/*.pyc

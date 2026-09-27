@@ -7,6 +7,7 @@ public record VideoProcessingResponse(
         String audioFile,
         String framesDirectory,
         long frameCount,
+        String transcript,
         String status
 ) {
 }

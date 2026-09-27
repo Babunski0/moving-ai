@@ -8,7 +8,6 @@ import com.movingai.backend.repository.VideoAnalysisRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
@@ -22,13 +21,16 @@ public class VideoService {
 
     private final FfmpegService ffmpegService;
     private final VideoAnalysisRepository videoAnalysisRepository;
+    private final TranscriptionService transcriptionService;
 
     public VideoService(
             FfmpegService ffmpegService,
-            VideoAnalysisRepository videoAnalysisRepository
+            VideoAnalysisRepository videoAnalysisRepository,
+            TranscriptionService transcriptionService
     ) {
         this.ffmpegService = ffmpegService;
         this.videoAnalysisRepository = videoAnalysisRepository;
+        this.transcriptionService = transcriptionService;
     }
 
     public VideoProcessingResponse processVideo(MultipartFile video) {
@@ -73,26 +75,31 @@ public class VideoService {
 
         try {
 
+            // Create required directories
             Files.createDirectories(uploadDirectory);
             Files.createDirectories(audioDirectory);
             Files.createDirectories(framesDirectory);
 
+            // Save uploaded video
             Files.copy(
                     video.getInputStream(),
                     savedVideo,
                     StandardCopyOption.REPLACE_EXISTING
             );
 
+            // Extract audio from video
             ffmpegService.extractAudio(
                     savedVideo,
                     audioFile
             );
 
+            // Extract frames from video
             ffmpegService.extractFrames(
                     savedVideo,
                     framesDirectory
             );
 
+            // Count extracted frames
             long frameCount;
 
             try (Stream<Path> files = Files.list(framesDirectory)) {
@@ -102,12 +109,13 @@ public class VideoService {
                         .filter(path ->
                                 path.getFileName()
                                         .toString()
-                                        .toLowerCase()
+                                        .toLowerCase(Locale.ROOT)
                                         .endsWith(".jpg")
                         )
                         .count();
             }
 
+            // Save FFmpeg processing result
             analysis.setSavedVideo(savedVideo.toString());
             analysis.setAudioFile(audioFile.toString());
             analysis.setFramesDirectory(framesDirectory.toString());
@@ -117,6 +125,24 @@ public class VideoService {
 
             videoAnalysisRepository.save(analysis);
 
+            // Start transcription
+            analysis.setStatus(AnalysisStatus.TRANSCRIBING);
+            analysis.setUpdatedAt(Instant.now());
+
+            videoAnalysisRepository.save(analysis);
+
+            // Send audio.wav to OpenAI
+            String transcript =
+                    transcriptionService.transcribe(audioFile);
+
+            // Save transcription result
+            analysis.setTranscript(transcript);
+            analysis.setStatus(AnalysisStatus.TRANSCRIBED);
+            analysis.setUpdatedAt(Instant.now());
+
+            videoAnalysisRepository.save(analysis);
+
+            // Return response
             return new VideoProcessingResponse(
                     analysisId,
                     video.getOriginalFilename(),
@@ -124,7 +150,8 @@ public class VideoService {
                     audioFile.toString(),
                     framesDirectory.toString(),
                     frameCount,
-                    "PROCESSED"
+                    transcript,
+                    "TRANSCRIBED"
             );
 
         } catch (Exception e) {

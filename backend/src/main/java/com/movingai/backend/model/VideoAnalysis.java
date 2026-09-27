@@ -18,6 +18,9 @@ public class VideoAnalysis {
     @Column(nullable = false)
     private AnalysisStatus status;
 
+    @Column(columnDefinition = "TEXT")
+    private String transcript;
+
     private String savedVideo;
 
     private String audioFile;
@@ -106,4 +109,14 @@ public class VideoAnalysis {
     public void setUpdatedAt(Instant updatedAt) {
         this.updatedAt = updatedAt;
     }
+
+    public String getTranscript() {
+        return transcript;
+    }
+
+    public void setTranscript(String transcript) {
+        this.transcript = transcript;
+    }
+
+
 }
