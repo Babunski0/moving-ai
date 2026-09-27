@@ -1,5 +1,7 @@
 package com.movingai.backend.dto;
 
-public class FurnitureItemResponse {
-    
+public record FurnitureItemResponse(
+        String name,
+        int quantity
+) {
 }

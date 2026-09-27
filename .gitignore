@@ -49,7 +49,12 @@ Thumbs.db
 # Local test videos
 *.mp4
 
-# Python Vision
+# Local vision models
+vision/*.pt
+vision/*.ts
+vision/*.npz
+
+# Python
 vision/.venv/
 vision/__pycache__/
 vision/*.pyc

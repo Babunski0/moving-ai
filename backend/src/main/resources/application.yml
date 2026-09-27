@@ -23,3 +23,7 @@ server:
 
 openai:
   api-key: ${OPENAI_API_KEY}
+
+vision:
+  python-path: C:/Projects/moving-ai/vision/.venv/Scripts/python.exe
+  script-path: C:/Projects/moving-ai/vision/detect_furniture.py

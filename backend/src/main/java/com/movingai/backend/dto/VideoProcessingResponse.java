@@ -1,13 +1,12 @@
 package com.movingai.backend.dto;
 
+import java.util.List;
+
 public record VideoProcessingResponse(
         String analysisId,
         String originalFileName,
-        String savedVideo,
-        String audioFile,
-        String framesDirectory,
         long frameCount,
-        String transcript,
+        List<FurnitureItemResponse> furniture,
         String status
 ) {
 }
